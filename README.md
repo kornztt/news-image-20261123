@@ -28,4 +28,8 @@ world page; The Economic Times international news; Arab News PK world page;
 The Standard morning recap; and the AP / Reuters / BBC Verify reporting
 summarised in the day's 24-hour world news recap. Casualty figures follow
 the reporting as published: 6 killed in the Kyiv region (SCMP), 24 body bags
-recovered in Java (The Standard), 10 hurt at Benghazi (AP / Reuters).
+recovered in Java (The Standard), 10 hurt at Benghazi (AP / Reuters). The
+Guterres quotation is verbatim from his COP31 statement as reported by UN
+News on 22 November 2026 (news.un.org/en/story/2026/11/1168855): "There may
+be no consensus in the negotiating room. There is no ambiguity in the
+science."

@@ -335,8 +335,9 @@ function drawWrappedCentred(
 // ---------------------------------------------------------------- pictures
 // Every picture is drawn from shapes: no photographs, no downloaded art.
 
-// Lead picture: a cracked Earth over a dark sky, with storm clouds and a
-// broken summit table below it — the climate talks falling apart.
+// Lead picture: a cracked Earth on a dark sky. The meaning is spelled
+// out in words at the bottom: a red banner reading COP31: NO DEAL, so
+// the picture reads at a glance as the climate talks falling apart.
 function drawGlobe(cv: Canvas, x: number, y: number, w: number, h: number): void {
   cv.rect(x, y, w, h, SKY);
   // stars
@@ -383,67 +384,68 @@ function drawGlobe(cv: Canvas, x: number, y: number, w: number, h: number): void
     5,
     [12, 12, 12],
   );
-  // broken summit table at the bottom: a long table, two empty chairs, a
-  // snapped flagpole
-  const ty = y + h * 0.86;
-  cv.rect(x + w * 0.08, ty, w * 0.84, 10, [90, 60, 30]);
-  cv.rect(x + w * 0.08, ty + 10, w * 0.84, 4, [60, 40, 20]);
-  // chairs
-  for (const fx of [0.18, 0.82]) {
-    const chx = x + w * fx;
-    cv.rect(chx - 16, ty - 34, 32, 8, INK);
-    cv.rect(chx - 16, ty - 34, 5, 52, INK);
-    cv.rect(chx + 11, ty - 34, 5, 52, INK);
-  }
-  // snapped flagpole, leaning, flag torn
-  cv.line(x + w * 0.5, ty, x + w * 0.56, ty - 58, 5, INK);
-  cv.polygon(
-    [
-      [x + w * 0.56, ty - 58],
-      [x + w * 0.66, ty - 50],
-      [x + w * 0.56, ty - 40],
-    ],
-    RED,
-  );
-  // rising smoke from the broken table is left out: on the dark sky it
-  // read as stray white blobs.
+  // Bottom banner: states the picture's meaning in words, so no one
+  // has to guess what the cracked Earth stands for.
+  const bannerH = 46;
+  cv.rect(x, y + h - bannerH, w, bannerH, RED);
+  cv.rect(x, y + h - bannerH, w, 2, WHITE);
+  drawTextCentred(cv, 'COP31: NO DEAL', x + w / 2, y + h - bannerH + 9, 4, WHITE);
 }
 
-// US Capitol dome on a blue field, with a ballot box in front.
+// US Capitol: ribbed dome on a colonnaded drum, triangular pediment over
+// a columned central portico, two windowed wings, steps and a lawn —
+// drawn as architecture, not a plain white blob.
 function drawCapitol(cv: Canvas, x: number, y: number, w: number, h: number): void {
   cv.rect(x, y, w, h, BLUE);
   cv.circle(x + w * 0.82, y + h * 0.2, 14, GOLD); // sun
   const cx = x + w * 0.5;
-  const base = y + h * 0.88;
-  // building base and wings
-  cv.rect(x + w * 0.12, base - 34, w * 0.76, 34, WHITE);
-  cv.rect(x + w * 0.2, base - 52, w * 0.6, 20, WHITE);
-  // columns
-  for (let i = 0; i < 7; i++) {
-    cv.rect(x + w * (0.22 + i * 0.093), base - 52, 7, 52, [210, 210, 205]);
+  const base = y + 100;
+  // ribbed dome, drawn first so the drum and pediment cover its lower half
+  cv.ellipse(cx, base - 60, w * 0.115, 24, WHITE);
+  // dome ribs
+  cv.line(cx - 9, base - 82, cx - 24, base - 60, 2, [175, 175, 170]);
+  cv.line(cx + 9, base - 82, cx + 24, base - 60, 2, [175, 175, 170]);
+  cv.line(cx - 18, base - 78, cx - 31, base - 60, 2, [175, 175, 170]);
+  cv.line(cx + 18, base - 78, cx + 31, base - 60, 2, [175, 175, 170]);
+  cv.line(cx, base - 84, cx, base - 60, 2, [175, 175, 170]);
+  // lantern and finial on top of the dome
+  cv.rect(cx - 4, base - 92, 8, 8, [232, 232, 227]);
+  cv.circle(cx, base - 94, 2, INK);
+  // colonnaded drum under the dome
+  cv.rect(cx - w * 0.1, base - 60, w * 0.2, 10, [232, 232, 227]);
+  for (let i = 0; i < 3; i++) {
+    cv.rect(cx - w * 0.06 + i * w * 0.06, base - 58, 4, 6, [90, 90, 95]);
   }
-  // dome
-  cv.ellipse(cx, base - 52, w * 0.13, h * 0.3, WHITE);
-  cv.rect(cx - w * 0.13, base - 56, w * 0.26, 8, WHITE);
-  cv.rect(cx - 3, base - 52 - h * 0.3 - 22, 6, 24, INK);
-  cv.circle(cx, base - 52 - h * 0.3 - 24, 5, RED);
-  // ballot box, clear of the columns, sitting on the steps
-  const bx = x + w * 0.74;
-  const by = base - 22;
-  cv.rect(bx, by, 34, 22, INK);
-  cv.rect(bx - 3, by - 5, 40, 6, INK);
+  // wings, with a row of windows each
+  cv.rect(x + w * 0.07, base - 24, w * 0.86, 24, WHITE);
+  for (const side of [0.11, 0.79]) {
+    for (let i = 0; i < 3; i++) {
+      cv.rect(x + w * (side + i * 0.055), base - 17, 8, 10, [70, 80, 95]);
+    }
+  }
+  // flagpole with a small US flag on the left wing
+  cv.line(x + w * 0.14, base - 24, x + w * 0.14, base - 42, 2, INK);
+  cv.rect(x + w * 0.14, base - 42, 17, 9, RED);
+  cv.rect(x + w * 0.14, base - 39, 17, 3, WHITE);
+  // central portico: block, triangular pediment, columns
+  cv.rect(cx - w * 0.19, base - 40, w * 0.38, 40, WHITE);
   cv.polygon(
     [
-      [bx + 12, by - 16],
-      [bx + 22, by - 16],
-      [bx + 20, by - 5],
-      [bx + 14, by - 5],
+      [cx - w * 0.19, base - 40],
+      [cx + w * 0.19, base - 40],
+      [cx, base - 56],
     ],
     WHITE,
   );
-  // steps
-  cv.rect(x + w * 0.3, base, w * 0.4, 5, [210, 210, 205]);
-  cv.rect(x + w * 0.26, base + 5, w * 0.48, 5, [190, 190, 185]);
+  cv.line(cx - w * 0.19, base - 40, cx, base - 56, 2, [175, 175, 170]);
+  cv.line(cx + w * 0.19, base - 40, cx, base - 56, 2, [175, 175, 170]);
+  for (let i = 0; i < 5; i++) {
+    cv.rect(cx - w * 0.15 + i * w * 0.075, base - 38, 6, 38, [205, 205, 200]);
+  }
+  // steps and lawn
+  cv.rect(x + w * 0.32, base, w * 0.36, 5, [210, 210, 205]);
+  cv.rect(x + w * 0.28, base + 5, w * 0.44, 5, [190, 190, 185]);
+  cv.rect(x, base + 10, w, 10, [74, 110, 72]);
 }
 
 // A grey warship on dark waves, hit by a small drone above it, smoke rising.
@@ -609,14 +611,26 @@ function drawPage(): Canvas {
     INK,
     20,
   );
-  drawText(cv, '"NO AMBIGUITY IN THE SCIENCE"', rx, 436, 2, RED);
-  drawText(cv, '— UN CHIEF GUTERRES', rx, 458, 2, INK);
-  cv.rect(rx, 492, rw, 1, GREY);
+  // Guterres, verbatim from his COP31 statement as reported by UN News
+  // (news.un.org, 22 Nov 2026): "There may be no consensus in the
+  // negotiating room. There is no ambiguity in the science."
+  drawWrapped(
+    cv,
+    '"THERE MAY BE NO CONSENSUS IN THE NEGOTIATING ROOM. THERE IS NO AMBIGUITY IN THE SCIENCE."',
+    rx,
+    420,
+    rw,
+    2,
+    RED,
+    17,
+  );
+  drawText(cv, '— UN CHIEF GUTERRES', rx, 474, 2, INK);
+  cv.rect(rx, 494, rw, 1, GREY);
   drawWrapped(
     cv,
     'FOSSIL FUEL DIVISIONS DOOMED THE DEAL.',
     rx,
-    506,
+    508,
     rw,
     2,
     INK,
@@ -679,7 +693,9 @@ function drawPage(): Canvas {
     it.icon(cv, ix, by, 56);
     const tx = ix + 66;
     it.head.forEach((ln, j) => drawText(cv, ln, tx, by + 4 + j * 18, 2, INK));
-    it.sub.forEach((ln, j) => drawText(cv, ln, tx, by + 44 + j * 16, 2, GREY));
+    // Sub-lines in near-black ink, not mid-grey: they must stay readable
+    // at this small size against the paper.
+    it.sub.forEach((ln, j) => drawText(cv, ln, tx, by + 44 + j * 16, 2, INK));
   });
 
   // ---- footer
