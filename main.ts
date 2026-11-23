@@ -351,28 +351,36 @@ function drawGlobe(cv: Canvas, x: number, y: number, w: number, h: number): void
   const r = Math.min(w, h) * 0.3;
   // earth
   cv.circle(cx, cy, r, [44, 110, 180]);
+  // dark rim so the disc reads against the sky
+  cv.ring(cx, cy, r, 3, [20, 60, 110]);
   // continents (green blobs clipped roughly to the disc by drawing inside it)
   cv.ellipse(cx - r * 0.42, cy - r * 0.3, r * 0.34, r * 0.2, GREEN);
   cv.ellipse(cx + r * 0.35, cy + r * 0.1, r * 0.3, r * 0.24, GREEN);
   cv.ellipse(cx - r * 0.1, cy + r * 0.45, r * 0.26, r * 0.16, GREEN);
   cv.ellipse(cx + r * 0.55, cy - r * 0.42, r * 0.16, r * 0.12, GREEN);
   // polar cap
-  cv.ellipse(cx, cy - r * 0.86, r * 0.42, r * 0.14, WHITE);
-  // clouds
-  cv.ellipse(cx - r * 0.55, cy - r * 0.62, r * 0.3, r * 0.1, WHITE);
-  cv.ellipse(cx + r * 0.5, cy + r * 0.55, r * 0.34, r * 0.1, WHITE);
+  cv.ellipse(cx, cy - r * 0.88, r * 0.4, r * 0.11, WHITE);
+  // clouds, kept well inside the disc so they do not stick out like caps
+  cv.ellipse(cx - r * 0.45, cy - r * 0.55, r * 0.26, r * 0.09, WHITE);
+  cv.ellipse(cx + r * 0.42, cy + r * 0.5, r * 0.28, r * 0.09, WHITE);
+  cv.ellipse(cx + r * 0.45, cy - r * 0.35, r * 0.16, r * 0.06, WHITE);
   // the crack: a jagged black split across the globe, glowing red at its ends
   const crack: [number, number][] = [
-    [cx - r * 0.55, cy - r * 0.78],
+    [cx - r * 0.5, cy - r * 0.7],
     [cx - r * 0.3, cy - r * 0.4],
     [cx - r * 0.48, cy - r * 0.05],
     [cx - r * 0.15, cy + r * 0.3],
     [cx - r * 0.32, cy + r * 0.62],
     [cx + r * 0.05, cy + r * 0.9],
   ];
-  cv.polyline(crack, 7, [12, 12, 12]);
-  cv.circle(crack[0][0], crack[0][1], 9, RED);
-  cv.circle(crack[crack.length - 1][0], crack[crack.length - 1][1], 9, RED);
+  // the crack: a wide dark fissure with a red-hot core, so it reads as the
+  // planet splitting, not a lightning bolt; glowing ends
+  cv.polyline(crack, 10, [12, 12, 12]);
+  cv.polyline(crack, 4, RED);
+  cv.ring(crack[0][0], crack[0][1], 11, 3, ORANGE);
+  cv.circle(crack[0][0], crack[0][1], 7, RED);
+  cv.ring(crack[crack.length - 1][0], crack[crack.length - 1][1], 11, 3, ORANGE);
+  cv.circle(crack[crack.length - 1][0], crack[crack.length - 1][1], 7, RED);
   // a second, thinner crack
   cv.polyline(
     [
@@ -454,11 +462,12 @@ function drawWarship(cv: Canvas, x: number, y: number, w: number, h: number): vo
   // moon
   cv.circle(x + w * 0.85, y + h * 0.16, 13, [235, 230, 200]);
   const wy = y + h * 0.62;
-  // waves
-  for (let i = 0; i < 3; i++) {
-    const yy = wy + 26 + i * 22;
+  // waves, kept inside the picture: the third row used to spill past the
+  // bottom edge and strike through the LIBYA kicker below
+  for (let i = 0; i < 2; i++) {
+    const yy = wy + 22 + i * 16;
     for (let px = 0; px < w; px += 4) {
-      const wave = Math.sin((px / w) * Math.PI * 3 + i * 1.7) * 5;
+      const wave = Math.sin((px / w) * Math.PI * 3 + i * 1.7) * 4;
       cv.rect(x + px, yy + wave, 4, 3, [70, 110, 160]);
     }
   }
@@ -526,7 +535,7 @@ function drawFactory(cv: Canvas, x: number, y: number, w: number, h: number): vo
     );
   };
   flame(x + w * 0.24, 46, ORANGE);
-  flame(x + w * 0.38, 58, ORANGE);
+  flame(x + w * 0.38, 50, ORANGE); // capped at 50: a taller flame poked past the picture's top edge
   flame(x + w * 0.5, 40, ORANGE);
   flame(x + w * 0.38, 34, [250, 220, 80]);
   flame(x + w * 0.24, 26, [250, 220, 80]);
@@ -636,6 +645,11 @@ function drawPage(): Canvas {
     INK,
     18,
   );
+  // by the numbers, filling the dead space under the lead text with
+  // verified facts (Reuters/CNN, 22-23 Nov 2026): 190+ countries at the
+  // talks, more than two weeks of negotiations, no deal
+  cv.rect(rx, 540, rw, 1, GREY);
+  drawText(cv, '190+ NATIONS • 2 WEEKS • NO DEAL', rx, 552, 2, RED);
 
   // ---- divider
   cv.rect(M, 578, W - 2 * M, 3, INK);
@@ -662,9 +676,11 @@ function drawPage(): Canvas {
   // 3. Indonesia factory fire
   drawFactory(cv, colX[2], cy, colW, 120);
   drawText(cv, 'INDONESIA', colX[2], cy + 130, 2, RED);
-  drawText(cv, 'FACTORY FIRE', colX[2], cy + 150, 4, INK);
-  drawText(cv, 'MANY MISSING', colX[2], cy + 182, 4, INK);
-  drawWrapped(cv, '24 BODY BAGS RECOVERED IN JAVA; SEARCH RESUMES.', colX[2], cy + 220, colW, 2, INK, 18);
+  drawText(cv, 'JAVA FIRE', colX[2], cy + 150, 4, INK);
+  drawText(cv, 'KILLS 24', colX[2], cy + 182, 4, INK);
+  // Reuters, 23 Nov 2026: Indonesia confirmed 24 dead on Monday, with
+  // about 30 people still missing as the search resumed
+  drawWrapped(cv, 'ABOUT 30 STILL MISSING AS SEARCH RESUMES.', colX[2], cy + 220, colW, 2, INK, 18);
 
   // ---- divider
   cv.rect(M, 860, W - 2 * M, 3, INK);
